@@ -50,7 +50,7 @@ if "%PRESET%"=="" (echo No preset selected & pause & exit /b 1)
 
 set "OUT=%~dpn1_%TAG%.mp4"
 
-set "VF=fps=24,scale=%W%:%H%:force_original_aspect_ratio=decrease,pad=%W%:%H%:(ow-iw)/2:(oh-ih)/2,format=yuv420p"
+set "VF=fps=24,scale=%W%:%H%:force_original_aspect_ratio=decrease:in_range=tv:out_range=tv,pad=%W%:%H%:(ow-iw)/2:(oh-ih)/2,format=yuv420p"
 
 ffmpeg -y -hide_banner -loglevel warning -stats ^
   -i "%IN%" ^
@@ -58,6 +58,7 @@ ffmpeg -y -hide_banner -loglevel warning -stats ^
   -vf "%VF%" ^
   -c:v libx264 -pix_fmt yuv420p -preset medium -crf 17 ^
   -profile:v high -level 4.1 ^
+  -colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv ^
   -c:a copy ^
   -movflags +faststart ^
   "%OUT%"
@@ -71,6 +72,7 @@ if errorlevel 1 (
     -vf "%VF%" ^
     -c:v libx264 -pix_fmt yuv420p -preset medium -crf 17 ^
     -profile:v high -level 4.1 ^
+    -colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv ^
     -c:a aac -b:a 192k ^
     -movflags +faststart ^
     "%OUT%"
